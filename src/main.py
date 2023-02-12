@@ -119,11 +119,11 @@ def pep(session):
     soup = BeautifulSoup(response.text, 'lxml')
     row = soup.find_all('tr')
 
-    for link in row:
-        object = find_tag(link, 'a')
+    for link in tqdm(row):
+        a_tag = link.find('a')
         symbols = link.find('abbr')
-        if object and symbols is not None:
-            pep_link = urljoin(PEP_LIST_URL, object['href'])
+        if a_tag and symbols is not None:
+            pep_link = urljoin(PEP_LIST_URL, a_tag['href'])
             if len(symbols.text) > 1:
                 status_simbol = symbols.text[-1]
             else:
@@ -137,14 +137,15 @@ def pep(session):
             for dt in dt_tag:
                 if dt.text == 'Status:':
                     status = dt.find_next_sibling('dd')
-                    if status.text in EXPECTED_STATUS[status_simbol]:
-                        accepted_status.append(status.text)
+                    try:
+                        if status.text in EXPECTED_STATUS[status_simbol]:
+                            accepted_status.append(status.text)
+                    except KeyError as err:
+                        logging.error(f'Возникла ошибка: {err},'
+                                      f'неопозданный статус - {status_simbol}')
 
-    counter = Counter(accepted_status)
-    for i in counter:
-        results.append(
-            (i, counter[i])
-        )
+    counter = dict(Counter(accepted_status))
+    results.extend((counter.items()))
 
     return results
 
