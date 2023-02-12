@@ -108,6 +108,7 @@ def download(session):
         file.write(response.content)
 
 
+# flake8: noqa: C901
 def pep(session):
     accepted_status = []
     results = [('Статус', 'Количество')]
