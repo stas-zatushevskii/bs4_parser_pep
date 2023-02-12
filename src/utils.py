@@ -23,3 +23,11 @@ def find_tag(soup, tag, attrs=None):
         logging.error(error_msg, stack_info=True)
         raise ParserFindTagException(error_msg)
     return searched_tag
+
+
+def chek_symbol(symbol):
+    if len(symbol) > 1:
+        status_simbol = symbol[-1]
+    else:
+        status_simbol = ''
+    return status_simbol

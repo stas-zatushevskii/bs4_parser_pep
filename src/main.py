@@ -10,7 +10,7 @@ from collections import Counter
 from constants import BASE_DIR, MAIN_DOC_URL, PEP_LIST_URL, EXPECTED_STATUS
 from configs import configure_argument_parser, configure_logging
 from outputs import control_output
-from utils import get_response, find_tag
+from utils import get_response, find_tag, chek_symbol
 
 
 def whats_new(session):
@@ -108,7 +108,6 @@ def download(session):
         file.write(response.content)
 
 
-# flake8: noqa: C901
 def pep(session):
     accepted_status = []
     results = [('Статус', 'Количество')]
@@ -125,9 +124,7 @@ def pep(session):
         symbols = link.find('abbr')
         if a_tag and symbols is not None:
             pep_link = urljoin(PEP_LIST_URL, a_tag['href'])
-            status_simbol = ''
-            if len(symbols.text) > 1:
-                status_simbol = symbols.text[-1]
+            status_simbol = chek_symbol(symbols.text)
             response = get_response(session, pep_link)
             if response is None:
                 continue
