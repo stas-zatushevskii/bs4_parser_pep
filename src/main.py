@@ -124,10 +124,9 @@ def pep(session):
         symbols = link.find('abbr')
         if a_tag and symbols is not None:
             pep_link = urljoin(PEP_LIST_URL, a_tag['href'])
+            status_simbol = ''
             if len(symbols.text) > 1:
                 status_simbol = symbols.text[-1]
-            else:
-                status_simbol = ''
             response = get_response(session, pep_link)
             if response is None:
                 continue
